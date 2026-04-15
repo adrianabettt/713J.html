@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Meu Programa de Notas</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F0F4FF;
+  --white: #FFFFFF;
+  --border: #D0D8F0;
+  --text: #1A1A2E;
+  --sub: #5A5A7A;
+  --font: 'Nunito', system-ui, sans-serif;
+  --r: 20px;
+  --rlg: 28px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 18px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 16px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* HEADER */
+.header {
+  background: var(--white);
+  border-radius: var(--rlg);
+  border: 2px solid var(--border);
+  padding: 14px 20px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.header-icon { font-size: 36px; line-height: 1; }
+.header-title { font-size: 20px; font-weight: 900; color: var(--text); }
+.header-sub { font-size: 13px; font-weight: 600; color: var(--sub); margin-top: 2px; }
+
+/* TWO-COL LAYOUT */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 600px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* CARD */
+.card {
+  background: var(--white);
+  border-radius: var(--rlg);
+  border: 2px solid var(--border);
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.card-icon { font-size: 28px; line-height: 1; }
+.card-label { font-size: 15px; font-weight: 800; color: var(--text); }
+
+/* SECTION LABEL */
+.slbl {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--sub);
+  margin: 14px 0 8px;
+}
+
+/* BIG TOUCH BUTTON */
+.big-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 90px;
+  border-radius: var(--r);
+  border: 3px solid transparent;
+  cursor: pointer;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: 13px;
+  transition: transform .12s, box-shadow .12s;
+  padding: 12px 8px;
+  -webkit-tap-highlight-color: transparent;
+  text-align: center;
+  line-height: 1.3;
+}
+.big-btn:active { transform: scale(.94); }
+.big-btn .bi { font-size: 34px; line-height: 1; margin-bottom: 2px; }
+
+/* COLOR VARIANTS */
+.btn-blue   { background: #DDEEFF; border-color: #88BBEE; color: #1A4A88; }
+.btn-green  { background: #DDFFF0; border-color: #77DDAA; color: #1A6040; }
+.btn-amber  { background: #FFF6DD; border-color: #FFCC66; color: #7A4800; }
+.btn-red    { background: #FFEDED; border-color: #FFAAAA; color: #880000; }
+.btn-purple { background: #F0EAFF; border-color: #CCAAFF; color: #4A1A88; }
+.btn-pink   { background: #FFEEF6; border-color: #FFAADD; color: #881A55; }
+.btn-gray   { background: #F0F0F0; border-color: #CCCCCC; color: #444444; }
+
+.btn-on { transform: scale(.97); box-shadow: inset 0 2px 6px rgba(0,0,0,.12); }
+.btn-on.btn-blue   { background: #AACCFF; border-color: #3377CC; }
+.btn-on.btn-green  { background: #AAEEDD; border-color: #22AA77; }
+.btn-on.btn-amber  { background: #FFDD88; border-color: #DD9900; }
+.btn-on.btn-red    { background: #FFBBBB; border-color: #CC3333; }
+.btn-on.btn-purple { background: #DDCCFF; border-color: #8855CC; }
+.btn-on.btn-pink   { background: #FFCCE8; border-color: #DD5599; }
+
+/* GRID 2 and 3 */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+/* OUTPUT WINDOW */
+.output-win {
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 3px solid var(--border);
+  margin-bottom: 14px;
+  min-height: 180px;
+  transition: border-color .3s;
+}
+.output-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #F4F4F4;
+  border-bottom: 2px solid var(--border);
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dr { background: #FFAAAA; }
+.da { background: #FFDD88; }
+.dg { background: #AAEEBB; }
+.bar-lbl { font-size: 12px; font-weight: 700; color: var(--sub); margin-left: 4px; }
+.output-body {
+  padding: 20px;
+  min-height: 140px;
+  transition: background .4s;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 2;
+}
+
+/* EXECUTE BUTTON */
+.exe-btn {
+  width: 100%;
+  min-height: 80px;
+  border-radius: var(--r);
+  border: 3px solid #33AA66;
+  background: #CCFFEE;
+  color: #115533;
+  font-family: var(--font);
+  font-weight: 900;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform .12s, background .12s;
+}
+.exe-btn:active { transform: scale(.96); background: #AAEEDD; }
+.exe-btn .bi { font-size: 32px; }
+
+/* RESET BUTTON */
+.reset-btn {
+  width: 100%;
+  min-height: 60px;
+  border-radius: var(--r);
+  border: 3px solid #CCCCCC;
+  background: #F4F4F4;
+  color: #444;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.reset-btn:active { background: #E0E0E0; }
+
+/* NOTAS DISPLAY */
+.notas-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.nota-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 3px solid;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform .1s;
+}
+.nota-pill:active { transform: scale(.88); }
+.np-a { background: #DDFFF0; border-color: #44CC88; color: #115533; }
+.np-m { background: #DDEEFF; border-color: #4499DD; color: #112266; }
+.np-b { background: #FFEDED; border-color: #EE6666; color: #770000; }
+
+/* ADD NOTA */
+.add-nota-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.nota-input-group {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  background: #F4F6FF;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 6px 12px;
+}
+.nota-inc {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--white);
+  font-size: 22px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  transition: background .1s;
+}
+.nota-inc:active { background: #E0E4FF; }
+.nota-val {
+  font-size: 22px;
+  font-weight: 900;
+  min-width: 44px;
+  text-align: center;
+  color: var(--text);
+}
+.add-btn {
+  min-height: 50px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 3px solid #4499DD;
+  background: #DDEEFF;
+  color: #112266;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.add-btn:active { background: #AACCFF; }
+
+/* DIFF */
+.diff-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.diff-cell {
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 2px solid var(--border);
+}
+.diff-head {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  border-bottom: 2px solid var(--border);
+  background: #F4F4F4;
+  color: var(--sub);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.diff-body {
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 60px;
+  line-height: 1.9;
+}
+
+/* FEEDBACK FLASH */
+@keyframes pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.popping { animation: pop .35s ease; }
+
+/* PROGRESS STARS */
+.stars-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin: 10px 0;
+}
+.star { font-size: 34px; transition: transform .2s; }
+.star.lit { animation: pop .3s ease; }
+
+/* FEEDBACK BOX */
+.fb-box {
+  border-radius: var(--r);
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 800;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  border: 3px solid;
+}
+.fb-box.show { display: flex; }
+.fb-green { background: #DDFFF0; border-color: #44CC88; color: #115533; }
+.fb-amber { background: #FFF6DD; border-color: #FFCC44; color: #7A4800; }
+.fb-box .fb-icon { font-size: 28px; }
+
+/* VERSION BADGE */
+.ver-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #DDEEFF;
+  border: 2px solid #88BBEE;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #1A4A88;
+}
+
+/* TOOLTIP HINT */
+.hint {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sub);
+  margin-top: 4px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* DIVIDER */
+hr.div { border: none; border-top: 2px dashed var(--border); margin: 14px 0; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-icon">&#128187;</div>
+  <div>
+    <div class="header-title">PROGRAMA PARA CALCULAR MÉDIA DA TURMA</div>
+    <div class="header-sub">Informática&nbsp;·&nbsp; EF07CO03 &nbsp;·&nbsp; <span id="ver-badge" class="ver-badge">&#127381;</span></div>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- ══════════════════════ COLUNA ESQUERDA ══════════════════════ -->
+<div>
+
+  <!-- NOTAS DA TURMA -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">&#127891;</div>
+      <div class="card-label">NOTAS DA TURMA</div>
+    </div>
+
+    <div class="slbl">NOTAS ATUAIS</div>
+    <div class="notas-grid" id="notas-grid"></div>
+    <div class="hint">CLIQUE NO CÍRCULO PARA EXCLUIR ALGUMA NOTA</div>
+
+    <hr class="div">
+
+    <div class="slbl">ADICIONAR NOTA</div>
+    <div class="add-nota-row">
+      <div class="nota-input-group">
+        <button class="nota-inc" onclick="changeInputNota(-1)">−</button>
+        <div class="nota-val" id="input-nota-val">7</div>
+        <button class="nota-inc" onclick="changeInputNota(1)">+</button>
+      </div>
+      <button class="add-btn" onclick="addNota()">
+        <span style="font-size:22px">&#10010;</span> ADICIONAR
+      </button>
+    </div>
+  </div>
+
+  <!-- FERRAMENTAS DE REFINAMENTO -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">&#9881;&#65039;</div>
+      <div class="card-label">AQUI POSSO ESCOLHER COMO MELHORAR O VISUAL DO MEU PROGRAMA</div>
+    </div>
+
+    <!-- VISUAL -->
+    <div class="slbl">&#127912; Visual — como aparece</div>
+    <div class="g3">
+      <div>
+        <button class="big-btn btn-blue" id="bt-title" onclick="tog('title')">
+          <span class="bi">&#128196;</span>TÍTULO
+        </button>
+        <div class="hint">Adiciona título</div>
+      </div>
+      <div>
+        <button class="big-btn btn-blue" id="bt-sep" onclick="tog('sep')">
+          <span class="bi">&#10134;</span>LINHA
+        </button>
+        <div class="hint">Separa partes</div>
+      </div>
+      <div>
+        <button class="big-btn btn-blue" id="bt-box" onclick="tog('box')">
+          <span class="bi">📝</span>FUNDO
+        </button>
+        <div class="hint">Fundo colorido</div>
+      </div>
+    </div>
+
+    <div class="slbl">Escolher cor</div>
+    <div class="g3" style="margin-bottom:4px">
+      <button class="big-btn btn-blue" id="cor-azul" onclick="setCor('#1A4A88','#DDEEFF','azul')" style="min-height:60px">
+        <span class="bi">&#128309;</span>
+      </button>
+      <button class="big-btn btn-green" id="cor-verde" onclick="setCor('#1A6040','#DDFFF0','verde')" style="min-height:60px">
+        <span class="bi">&#128994;</span>
+      </button>
+      <button class="big-btn btn-amber" id="cor-ambar" onclick="setCor('#7A4800','#FFF6DD','ambar')" style="min-height:60px">
+        <span class="bi">&#128993;</span>
+      </button>
+      <button class="big-btn btn-red" id="cor-verm" onclick="setCor('#880000','#FFEDED','verm')" style="min-height:60px">
+        <span class="bi">&#128308;</span>
+      </button>
+      <button class="big-btn btn-purple" id="cor-roxo" onclick="setCor('#4A1A88','#F0EAFF','roxo')" style="min-height:60px">
+        <span class="bi">&#128992;</span>
+      </button>
+      <button class="big-btn btn-pink" id="cor-rosa" onclick="setCor('#881A55','#FFEEF6','rosa')" style="min-height:60px">
+        <span class="bi">&#128999;</span>
+      </button>
+    </div>
+
+    <hr class="div">
+
+    <!-- MENSAGENS -->
+    <div class="slbl">&#128172; AO FINALIZAR O QUE O PROGRAMA VAI DIZER</div>
+    <div class="g2">
+      <div>
+        <button class="big-btn btn-amber" id="bt-ms" onclick="togMsg('simples')">
+          <span class="bi">&#128515;</span>PASSOU / NÃO PASSOU
+        </button>
+        
+      </div>
+      <div>
+        <button class="big-btn btn-amber" id="bt-mc" onclick="togMsg('colorido')">
+          <span class="bi">&#127775;</span>PARABÉNS / ATENÇÃO!
+        </button>
+     
+      </div>
+    </div>
+
+    <hr class="div">
+
+    <!-- LÓGICA -->
+    <div class="slbl">&#128202; O QUE MAIS ELE PODERÁ MOSTRAR</div>
+    <div class="g2">
+      <div>
+        <button class="big-btn btn-green" id="bt-maior" onclick="togLogic('maior')">
+          <span class="bi">&#11014;&#65039;</span>MAIOR NOTA
+      </div>
+      <div>
+        <button class="big-btn btn-red" id="bt-menor" onclick="togLogic('menor')">
+          <span class="bi">&#11015;&#65039;</span>MENOR NOTA
+        </button>
+      </div>
+      <div>
+        <button class="big-btn btn-purple" id="bt-aprov" onclick="togLogic('aprov')">
+          <span class="bi">&#9989;</span>QUANTOS ALUNOS PASSARAM
+        </button>
+      </div>
+      <div>
+        <button class="big-btn btn-pink" id="bt-perc" onclick="togLogic('perc')">
+          <span class="bi">&#128200;</span>PORCENTAGEM
+        </button>
+      </div>
+    </div>
+
+    <hr class="div">
+
+    <!-- EXECUTAR -->
+    <button class="exe-btn" id="exe-btn" onclick="executar()">
+      <span class="bi">&#9654;&#65039;</span>
+      <span>EXECUTAR O PROGRAMA</span>
+    </button>
+
+    <div id="apply-fb" class="fb-box">
+      <span class="fb-icon">&#127881;</span>
+      <span id="apply-fb-txt">Programa melhorado!</span>
+    </div>
+
+    <button class="reset-btn" onclick="resetar()">
+      <span style="font-size:22px">&#8635;</span> Recomeçar
+    </button>
+
+  </div>
+
+</div><!-- fim coluna esquerda -->
+
+<!-- ══════════════════════ COLUNA DIREITA ══════════════════════ -->
+<div>
+
+  <!-- SAÍDA DO PROGRAMA -->
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div style="padding:14px 18px 0 18px; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+      <div class="card-icon">&#128250;</div>
+      <div class="card-label">O QUE O PROGRAMA MOSTRA</div>
+    </div>
+    <div style="padding:0 18px 18px">
+      <div class="output-win" id="output-win">
+        <div class="output-bar">
+          <div class="dot dr"></div>
+          <div class="dot da"></div>
+          <div class="dot dg"></div>
+          <span class="bar-lbl">RESULTADO DO PROGRAMA</span>
+        </div>
+        <div class="output-body" id="output-body">
+          <div style="color:#9999BB;font-size:15px;text-align:center;padding:20px 0">
+            <div style="font-size:48px">&#9654;&#65039;</div>
+            <div style="margin-top:8px">Aperte EXECUTAR para ver!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESTRELAS DE PROGRESSO -->
+      <div class="slbl" style="text-align:center">MELHORIAS FEITAS</div>
+      <div class="stars-row" id="stars-row">
+        <span class="star">&#11088;</span>
+        <span class="star">&#11088;</span>
+        <span class="star">&#11088;</span>
+        <span class="star">&#11088;</span>
+        <span class="star">&#11088;</span>
+      </div>
+      <div class="hint" id="stars-hint">Faça melhorias para ganhar estrelas!</div>
+    </div>
+  </div>
+
+  <!-- ANTES × DEPOIS -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">&#128260;</div>
+      <div class="card-label">Antes × Depois</div>
+    </div>
+    <div class="diff-row">
+      <div class="diff-cell">
+        <div class="diff-head">&#128337; Antes</div>
+        <div class="diff-body" id="diff-antes">
+          <span style="color:#AAAAAA">Execute primeiro</span>
+        </div>
+      </div>
+      <div class="diff-cell" style="border-color:#44CC88">
+        <div class="diff-head" style="background:#DDFFF0;color:#115533;border-color:#44CC88">&#9989; Agora</div>
+        <div class="diff-body" id="diff-agora">
+          <span style="color:#AAAAAA">Execute primeiro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESTATÍSTICAS -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">&#128202;</div>
+      <div class="card-label">Números da Turma</div>
+    </div>
+    <div class="g3">
+      <div style="text-align:center;background:#F4F6FF;border-radius:14px;padding:12px 6px;border:2px solid #C8D4F8">
+        <div style="font-size:30px;font-weight:900" id="st-alunos">10</div>
+        <div style="font-size:12px;font-weight:700;color:var(--sub)">&#127891; Alunos</div>
+      </div>
+      <div style="text-align:center;background:#F4F6FF;border-radius:14px;padding:12px 6px;border:2px solid #C8D4F8">
+        <div style="font-size:30px;font-weight:900" id="st-media">—</div>
+        <div style="font-size:12px;font-weight:700;color:var(--sub)">&#127919; Média</div>
+      </div>
+      <div style="text-align:center;background:#F4F6FF;border-radius:14px;padding:12px 6px;border:2px solid #C8D4F8">
+        <div style="font-size:30px;font-weight:900" id="st-aprov">—</div>
+        <div style="font-size:12px;font-weight:700;color:var(--sub)">&#9989; Passou</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- fim coluna direita -->
+</div><!-- fim layout -->
+
+<script>
+var S = {
+  notas: [6,7,8,5,9,4,7,10,6,8],
+  version: 0, mejoras: 0,
+  showTitle: false, showSep: false, showBox: false,
+  corH: '#1A4A88', corF: '#DDEEFF', corNome: 'azul',
+  msgMode: 'off',
+  showMaior: false, showMenor: false, showAprov: false, showPerc: false,
+  inputNota: 7,
+  originalCapturado: false, originalHTML: ''
+};
+
+/* ─── CALC ─────────────────────────────────────────── */
+function media()  { return S.notas.length ? S.notas.reduce(function(a,b){return a+b},0)/S.notas.length : 0; }
+function maior()  { return Math.max.apply(null,S.notas); }
+function menor()  { return Math.min.apply(null,S.notas); }
+function aprov()  { return S.notas.filter(function(n){return n>=6}).length; }
+
+/* ─── NOTAS ────────────────────────────────────────── */
+function renderNotas() {
+  var html = S.notas.map(function(n,i){
+    var cls = n>=8?'np-a':n>=6?'np-m':'np-b';
+    return '<div class="nota-pill '+cls+'" onclick="removeNota('+i+')" title="Toque para remover">'+n+'</div>';
+  }).join('');
+  document.getElementById('notas-grid').innerHTML = html || '<span style="color:#AAAAAA;font-size:13px">Nenhuma nota ainda</span>';
+  document.getElementById('st-alunos').textContent = S.notas.length;
+}
+
+function removeNota(i) {
+  S.notas.splice(i,1);
+  renderNotas();
+}
+
+function changeInputNota(d) {
+  S.inputNota = Math.max(0, Math.min(10, S.inputNota + d));
+  document.getElementById('input-nota-val').textContent = S.inputNota;
+}
+
+function addNota() {
+  S.notas.push(S.inputNota);
+  renderNotas();
+  pop(document.getElementById('notas-grid'));
+}
+
+/* ─── BUILD OUTPUT ─────────────────────────────────── */
+function buildOutput() {
+  if(!S.notas.length) return '<div style="color:#CC3333;font-weight:800;font-size:15px">&#9888; Sem notas!</div>';
+  var m = media();
+  var html = '';
+
+  if(S.showTitle) {
+    html += '<div style="font-weight:900;color:'+S.corH+';background:'+S.corF+';padding:8px 14px;border-radius:10px;margin-bottom:10px;border:2px solid '+S.corH+'44;font-size:15px">&#127919; Resultado da Turma</div>';
+  }
+  if(S.showSep) {
+    html += '<hr style="border:none;border-top:2.5px dashed '+S.corH+'66;margin:8px 0 12px">';
+  }
+
+  var wrap = S.showBox ? 'background:'+S.corF+';padding:10px 14px;border-radius:10px;border:2px solid '+S.corH+'33;margin-bottom:8px' : 'margin-bottom:8px';
+  html += '<div style="'+wrap+'">';
+  html += '<div>&#127919; Média da turma: <strong style="color:'+S.corH+'">'+m.toFixed(2)+'</strong></div>';
+  if(S.showMaior) html += '<div>&#11014;&#65039; Maior nota: <strong style="color:#115533">'+maior()+'</strong></div>';
+  if(S.showMenor) html += '<div>&#11015;&#65039; Menor nota: <strong style="color:#880000">'+menor()+'</strong></div>';
+  if(S.showAprov) html += '<div>&#9989; Passaram: <strong style="color:#1A4A88">'+aprov()+' de '+S.notas.length+'</strong></div>';
+  if(S.showPerc)  { var p=Math.round(aprov()/S.notas.length*100); html += '<div>&#128200; Percentual: <strong style="color:#1A4A88">'+p+'%</strong></div>'; }
+  html += '</div>';
+
+  if(S.msgMode === 'simples') {
+    if(m>=6) html += '<div style="background:#DDFFF0;color:#115533;padding:10px 14px;border-radius:10px;font-size:16px;font-weight:900;border:2px solid #44CC88">&#128515; Turma Aprovada!</div>';
+    else     html += '<div style="background:#FFEDED;color:#880000;padding:10px 14px;border-radius:10px;font-size:16px;font-weight:900;border:2px solid #EE6666">&#128577; Turma Reprovada</div>';
+  } else if(S.msgMode === 'colorido') {
+    if(m>=8)      html += '<div style="background:#DDFFF0;color:#115533;padding:10px 14px;border-radius:10px;font-size:16px;font-weight:900;border:2px solid #44CC88">&#127775; Parabéns, turma excelente!</div>';
+    else if(m>=6) html += '<div style="background:#DDEEFF;color:#1A4A88;padding:10px 14px;border-radius:10px;font-size:16px;font-weight:900;border:2px solid #88BBEE">&#128515; Turma aprovada!</div>';
+    else          html += '<div style="background:#FFEDED;color:#880000;padding:10px 14px;border-radius:10px;font-size:16px;font-weight:900;border:2px solid #EE6666">&#9888; Atenção: turma reprovada!</div>';
+  }
+
+  return html;
+}
+
+function buildOriginal() {
+  var m = media();
+  return '<div>&#127919; Média: <strong>'+m.toFixed(2)+'</strong></div>';
+}
+
+/* ─── EXECUTAR ─────────────────────────────────────── */
+function executar() {
+  if(!S.originalCapturado) {
+    S.originalHTML = buildOriginal();
+    document.getElementById('diff-antes').innerHTML = S.originalHTML;
+    S.originalCapturado = true;
+  }
+
+  var html = buildOutput();
+  var body = document.getElementById('output-body');
+  body.innerHTML = html;
+  document.getElementById('diff-agora').innerHTML = html;
+
+  var m = media();
+  document.getElementById('st-media').textContent = m.toFixed(2);
+  document.getElementById('st-aprov').textContent = aprov();
+
+  pop(body);
+  flashWin();
+}
+
+/* ─── TOGGLES ──────────────────────────────────────── */
+var togMap = {
+  title: {state:'showTitle', btn:'bt-title', cls:'btn-on btn-blue'},
+  sep:   {state:'showSep',   btn:'bt-sep',   cls:'btn-on btn-blue'},
+  box:   {state:'showBox',   btn:'bt-box',   cls:'btn-on btn-blue'},
+  maior: {state:'showMaior', btn:'bt-maior', cls:'btn-on btn-green'},
+  menor: {state:'showMenor', btn:'bt-menor', cls:'btn-on btn-red'},
+  aprov: {state:'showAprov', btn:'bt-aprov', cls:'btn-on btn-purple'},
+  perc:  {state:'showPerc',  btn:'bt-perc',  cls:'btn-on btn-pink'},
+};
+
+function tog(k) {
+  var t = togMap[k];
+  S[t.state] = !S[t.state];
+  var el = document.getElementById(t.btn);
+  el.className = 'big-btn ' + (S[t.state] ? t.cls : t.cls.split(' ').slice(1).join(' '));
+  if(!S[t.state]) el.className = 'big-btn ' + t.cls.split(' ')[1];
+  pop(el);
+  registrarMelhoria();
+}
+
+function togMsg(m) {
+  if(S.msgMode === m) { S.msgMode = 'off'; }
+  else { S.msgMode = m; }
+  var ms = document.getElementById('bt-ms');
+  var mc = document.getElementById('bt-mc');
+  ms.className = 'big-btn btn-amber' + (S.msgMode==='simples'?' btn-on':'');
+  mc.className = 'big-btn btn-amber' + (S.msgMode==='colorido'?' btn-on':'');
+  pop(S.msgMode==='simples'?ms:mc);
+  registrarMelhoria();
+}
+
+function togLogic(k) { tog(k); }
+
+/* ─── COR ──────────────────────────────────────────── */
+var corBtns = ['azul','verde','ambar','verm','roxo','rosa'];
+function setCor(h, f, nome) {
+  S.corH = h; S.corF = f; S.corNome = nome;
+  corBtns.forEach(function(c) {
+    var el = document.getElementById('cor-'+c);
+    if(el) el.style.outline = c===nome ? '4px solid '+h : 'none';
+  });
+  registrarMelhoria();
+}
+
+/* ─── MELHORIAS / ESTRELAS ─────────────────────────── */
+function registrarMelhoria() {
+  var count = 0;
+  if(S.showTitle||S.showSep||S.showBox) count++;
+  if(S.msgMode!=='off') count++;
+  if(S.showMaior||S.showMenor||S.showAprov||S.showPerc) count++;
+  if(S.corNome!=='azul') count++;
+  if(S.version===0 && count>0) { S.version=1; }
+  S.mejoras = count;
+  updateStars();
+  updateBadge();
+}
+
+function updateStars() {
+  var stars = document.querySelectorAll('.star');
+  var lit = Math.min(5, S.mejoras + (S.version>0?1:0));
+  var hints = ['Faça melhorias para ganhar estrelas!','Boa, primeira melhoria!','Duas melhorias!','Três melhorias!','Quase completo!','Programa completo! &#127881;'];
+  stars.forEach(function(s,i) {
+    if(i < lit) {
+      s.textContent = '⭐';
+      s.classList.add('lit');
+    } else {
+      s.textContent = '☆';
+      s.classList.remove('lit');
+    }
+  });
+  document.getElementById('stars-hint').innerHTML = hints[lit] || '';
+}
+
+function updateBadge() {
+  document.getElementById('ver-badge').innerHTML = '&#127381; Versão ' + (S.version + S.mejoras);
+}
+
+/* ─── APPLY FEEDBACK ───────────────────────────────── */
+function showFeedback(txt) {
+  var fb = document.getElementById('apply-fb');
+  var ftxt = document.getElementById('apply-fb-txt');
+  ftxt.textContent = txt;
+  fb.className = 'fb-box fb-green show';
+  setTimeout(function(){ fb.classList.remove('show'); }, 2200);
+}
+
+/* ─── FLASH / POP ──────────────────────────────────── */
+function pop(el) {
+  if(!el) return;
+  el.classList.remove('popping');
+  void el.offsetWidth;
+  el.classList.add('popping');
+}
+
+function flashWin() {
+  var win = document.getElementById('output-win');
+  var orig = win.style.borderColor;
+  win.style.borderColor = '#44CC88';
+  win.style.borderWidth = '4px';
+  setTimeout(function(){
+    win.style.borderColor = orig;
+    win.style.borderWidth = '3px';
+  }, 600);
+}
+
+/* ─── RESET ────────────────────────────────────────── */
+function resetar() {
+  if(!confirm('Recomeçar do zero?')) return;
+  S = {notas:[6,7,8,5,9,4,7,10,6,8],version:0,mejoras:0,showTitle:false,showSep:false,showBox:false,corH:'#1A4A88',corF:'#DDEEFF',corNome:'azul',msgMode:'off',showMaior:false,showMenor:false,showAprov:false,showPerc:false,inputNota:7,originalCapturado:false,originalHTML:''};
+
+  // reset toggles
+  var resets = {
+    'bt-title':'big-btn btn-blue','bt-sep':'big-btn btn-blue','bt-box':'big-btn btn-blue',
+    'bt-ms':'big-btn btn-amber','bt-mc':'big-btn btn-amber',
+    'bt-maior':'big-btn btn-green','bt-menor':'big-btn btn-red',
+    'bt-aprov':'big-btn btn-purple','bt-perc':'big-btn btn-pink'
+  };
+  Object.keys(resets).forEach(function(id){ document.getElementById(id).className=resets[id]; });
+  corBtns.forEach(function(c){ var el=document.getElementById('cor-'+c); if(el) el.style.outline=''; });
+
+  document.getElementById('input-nota-val').textContent = '7';
+  document.getElementById('output-body').innerHTML = '<div style="color:#9999BB;font-size:15px;text-align:center;padding:20px 0"><div style="font-size:48px">&#9654;&#65039;</div><div style="margin-top:8px">Aperte EXECUTAR para ver!</div></div>';
+  document.getElementById('diff-antes').innerHTML = '<span style="color:#AAAAAA">Execute primeiro</span>';
+  document.getElementById('diff-agora').innerHTML = '<span style="color:#AAAAAA">Execute primeiro</span>';
+  document.getElementById('st-media').textContent = '—';
+  document.getElementById('st-aprov').textContent = '—';
+  document.getElementById('apply-fb').className = 'fb-box';
+  renderNotas(); updateStars(); updateBadge();
+}
+
+/* ─── INIT ─────────────────────────────────────────── */
+renderNotas();
+updateStars();
+// marca cor inicial
+document.getElementById('cor-azul').style.outline = '4px solid #1A4A88';
+</script>
+</body>
+</html>
